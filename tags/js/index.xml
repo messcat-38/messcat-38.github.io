@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Js on mess cat</title><link>https://messcat-38.github.io/tags/js/</link><description>Recent content in Js on mess cat</description><generator>Hugo</generator><language>ja</language><lastBuildDate>Mon, 11 Aug 2025 13:45:38 +0900</lastBuildDate><atom:link href="https://messcat-38.github.io/tags/js/index.xml" rel="self" type="application/rss+xml"/><item><title>Pattern</title><link>https://messcat-38.github.io/posts/%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3/</link><pubDate>Mon, 11 Aug 2025 13:45:38 +0900</pubDate><guid>https://messcat-38.github.io/posts/%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3/</guid><description>&lt;p>「パターン」&lt;/p>
+&lt;h3 id="3x3のパターン">
+ 3x3のパターン
+ &lt;a class="heading-link" href="#3x3%e3%81%ae%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3">
+ &lt;i class="fa-solid fa-link" aria-hidden="true" title="見出しへのリンク">&lt;/i>
+ &lt;span class="sr-only">見出しへのリンク&lt;/span>
+ &lt;/a>
+&lt;/h3>
+&lt;div style="display:flex;gap:1rem;align-items:center;justify-content:flex-start;flex-wrap:wrap">
+ &lt;canvas id="pattern3x3" width="240" height="240" style="border:1px solid rgba(0,0,0,.15);border-radius:8px;background:#fff">&lt;/canvas>
+ &lt;div style="opacity:.8;font-size:0.95em">3×3のパターン&lt;/div>
+ &lt;noscript>JavaScriptを有効にするとパターンが表示されます。&lt;/noscript>
+&lt;/div>
+&lt;h3 id="4x4のパターン">
+ 4x4のパターン
+ &lt;a class="heading-link" href="#4x4%e3%81%ae%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3">
+ &lt;i class="fa-solid fa-link" aria-hidden="true" title="見出しへのリンク">&lt;/i>
+ &lt;span class="sr-only">見出しへのリンク&lt;/span>
+ &lt;/a>
+&lt;/h3>
+&lt;div style="display:flex;gap:1rem;align-items:center;justify-content:flex-start;flex-wrap:wrap;margin-top:1rem">
+ &lt;canvas id="pattern4x4" width="240" height="240" style="border:1px solid rgba(0,0,0,.15);border-radius:8px;background:#fff">&lt;/canvas>
+ &lt;div style="opacity:.8;font-size:0.95em">4×4のパターン&lt;/div>
+ &lt;noscript>JavaScriptを有効にするとパターンが表示されます。&lt;/noscript>
+&lt;/div>
+&lt;h3 id="55のパターン">
+ 5×5のパターン
+ &lt;a class="heading-link" href="#55%e3%81%ae%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3">
+ &lt;i class="fa-solid fa-link" aria-hidden="true" title="見出しへのリンク">&lt;/i>
+ &lt;span class="sr-only">見出しへのリンク&lt;/span>
+ &lt;/a>
+&lt;/h3>
+&lt;div style="display:flex;gap:1rem;align-items:center;justify-content:flex-start;flex-wrap:wrap;margin-top:1rem">
+ &lt;canvas id="pattern5x5" width="240" height="240" style="border:1px solid rgba(0,0,0,.15);border-radius:8px;background:#fff">&lt;/canvas>
+ &lt;div style="opacity:.8;font-size:0.95em">5×5のパターン&lt;/div>
+ &lt;noscript>JavaScriptを有効にするとパターンが表示されます。&lt;/noscript>
+&lt;/div></description></item></channel></rss>
