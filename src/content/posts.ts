@@ -11,11 +11,11 @@ export type Post = {
   effectSlug: string
 }
 
-export const posts: Post[] = effects.map((e, i) => ({
+export const posts: Post[] = effects.map((e) => ({
   slug: e.slug,
   title: e.title,
   titleJa: e.titleJa,
-  date: `2025-08-${String(10 + i).padStart(2, "0")}`,
+  date: "2025-05-21",
   description: e.description,
   tags: e.tags,
   effectSlug: e.slug,

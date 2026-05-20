@@ -21,6 +21,12 @@ type Tree = {
   geometry: THREE.BufferGeometry
 }
 
+type Seed = {
+  mesh: THREE.Mesh
+  vy: number
+  groundY: number
+}
+
 function randRange(rng: () => number, min: number, max: number) {
   return min + rng() * (max - min)
 }
@@ -88,15 +94,19 @@ function updateTreeGeometry(tree: Tree) {
 export const mountSeedTree: EffectMount = (container, options) => {
   const ctx = createEffectContext(container, options)
   const maxDepth = ctx.preview ? 4 : 6
+  const GROUND_Y = -1.5
+  const SPAWN_Y = 2.8
+  const GRAVITY = 12
+
   const trees: Tree[] = []
-  const seeds: THREE.Mesh[] = []
+  const seeds: Seed[] = []
   const rng = () => Math.random()
 
   const groundGeo = new THREE.PlaneGeometry(12, 8)
   const groundMat = new THREE.MeshStandardMaterial({ color: 0x1a2e1a, roughness: 0.95 })
   const ground = new THREE.Mesh(groundGeo, groundMat)
   ground.rotation.x = -Math.PI / 2
-  ground.position.y = -1.5
+  ground.position.y = GROUND_Y
   ctx.scene.add(ground)
 
   ctx.scene.add(new THREE.AmbientLight(0xffffff, 0.55))
@@ -110,20 +120,12 @@ export const mountSeedTree: EffectMount = (container, options) => {
   const seedGeo = new THREE.SphereGeometry(0.06, 8, 8)
   const seedMat = new THREE.MeshStandardMaterial({ color: 0x8b5a2b, roughness: 0.8 })
 
-  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 1.5)
+  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -GROUND_Y)
   const hit = new THREE.Vector3()
 
-  const plantSeed = () => {
-    ctx.raycaster.setFromCamera(ctx.mouse, ctx.camera)
-    if (!ctx.raycaster.ray.intersectPlane(plane, hit)) return
-
-    const seed = new THREE.Mesh(seedGeo, seedMat.clone())
-    seed.position.copy(hit)
-    ctx.scene.add(seed)
-    seeds.push(seed)
-
+  const germinate = (root: THREE.Vector3) => {
     const trunk = createBranch(
-      hit.clone(),
+      root,
       new THREE.Vector3(0, 1, 0),
       ctx.preview ? 0.5 : 0.7,
       0.08,
@@ -134,8 +136,17 @@ export const mountSeedTree: EffectMount = (container, options) => {
     const mat = new THREE.LineBasicMaterial({ vertexColors: true, linewidth: 1 })
     const lines = new THREE.LineSegments(geo, mat)
     ctx.scene.add(lines)
+    trees.push({ root: root.clone(), trunk, lines, geometry: geo })
+  }
 
-    trees.push({ root: hit.clone(), trunk, lines, geometry: geo })
+  const plantSeed = () => {
+    ctx.raycaster.setFromCamera(ctx.mouse, ctx.camera)
+    if (!ctx.raycaster.ray.intersectPlane(plane, hit)) return
+
+    const seedMesh = new THREE.Mesh(seedGeo, seedMat.clone())
+    seedMesh.position.set(hit.x, SPAWN_Y, hit.z)
+    ctx.scene.add(seedMesh)
+    seeds.push({ mesh: seedMesh, vy: 0, groundY: GROUND_Y + 0.06 })
   }
 
   const onClick = () => plantSeed()
@@ -154,12 +165,22 @@ export const mountSeedTree: EffectMount = (container, options) => {
   }
 
   const stopLoop = runAnimationLoop(ctx, (delta) => {
+    for (let i = seeds.length - 1; i >= 0; i--) {
+      const seed = seeds[i]
+      seed.vy -= GRAVITY * delta
+      seed.mesh.position.y += seed.vy * delta
+      if (seed.mesh.position.y <= seed.groundY) {
+        seed.mesh.position.y = seed.groundY
+        germinate(seed.mesh.position.clone())
+        ;(seed.mesh.material as THREE.Material).dispose()
+        ctx.scene.remove(seed.mesh)
+        seeds.splice(i, 1)
+      }
+    }
+
     trees.forEach((tree) => {
       growBranch(tree.trunk, delta)
       updateTreeGeometry(tree)
-    })
-    seeds.forEach((s, i) => {
-      s.scale.setScalar(1 + Math.sin(ctx.clock.elapsedTime * 4 + i) * 0.05)
     })
     ctx.camera.position.x = Math.sin(ctx.clock.elapsedTime * 0.15) * 0.3
     ctx.camera.lookAt(0, 0, 0)
@@ -178,9 +199,8 @@ export const mountSeedTree: EffectMount = (container, options) => {
       ctx.scene.remove(t.lines)
     })
     seeds.forEach((s) => {
-      s.geometry.dispose()
-      ;(s.material as THREE.Material).dispose()
-      ctx.scene.remove(s)
+      ;(s.mesh.material as THREE.Material).dispose()
+      ctx.scene.remove(s.mesh)
     })
     ctx.dispose()
   }
