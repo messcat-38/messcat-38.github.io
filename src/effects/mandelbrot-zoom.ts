@@ -2,6 +2,13 @@ import * as THREE from "three"
 import type { EffectMount } from "./core/types"
 import { createEffectContext, runAnimationLoop } from "./core/engine"
 
+const ZOOM_FACTOR = 0.5
+
+type ZoomState = {
+  center: THREE.Vector2
+  scale: number
+}
+
 const mandelbrotShader = {
   uniforms: {
     u_resolution: { value: new THREE.Vector2(1, 1) },
@@ -55,6 +62,9 @@ const mandelbrotShader = {
   `,
 }
 
+const initialCenter = new THREE.Vector2(-0.5, 0)
+const initialScale = 2.5
+
 export const mountMandelbrotZoom: EffectMount = (container, options) => {
   const ctx = createEffectContext(container, options)
   const ortho = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
@@ -66,12 +76,17 @@ export const mountMandelbrotZoom: EffectMount = (container, options) => {
   const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat)
   ctx.scene.add(mesh)
 
-  let scale = 2.5
-  const center = new THREE.Vector2(-0.5, 0)
+  let scale = initialScale
+  const center = initialCenter.clone()
   const circle = new THREE.Vector4(0, 0, 0, 0)
-  let zoomDir = 0
+  const history: ZoomState[] = [{ center: initialCenter.clone(), scale: initialScale }]
 
   const uniforms = mat.uniforms as typeof mandelbrotShader.uniforms
+
+  const applyState = (state: ZoomState) => {
+    center.copy(state.center)
+    scale = state.scale
+  }
 
   const focusAtPointer = () => {
     if (ctx.mouse.x < -10) return
@@ -83,6 +98,13 @@ export const mountMandelbrotZoom: EffectMount = (container, options) => {
     const uvX = (px - 0.5) * aspect
     const uvY = py - 0.5
     center.set(uvX * scale + center.x, uvY * scale + center.y)
+  }
+
+  const showClickCircle = () => {
+    const w = ctx.container.clientWidth
+    const h = ctx.container.clientHeight
+    const px = (ctx.mouse.x + 1) * 0.5
+    const py = (1 - ctx.mouse.y) * 0.5
     circle.set(px, py, 0, (Math.min(w, h) * 0.1) / Math.min(w, h))
   }
 
@@ -94,13 +116,23 @@ export const mountMandelbrotZoom: EffectMount = (container, options) => {
 
   const onPointerDown = (e: PointerEvent) => {
     updateMouseFromEvent(e)
-    focusAtPointer()
+
     if (e.button === 2) {
       e.preventDefault()
-      zoomDir = -1
-    } else if (e.button === 0) {
-      zoomDir = 1
+      if (history.length > 1) {
+        history.pop()
+        applyState(history[history.length - 1])
+      }
+      circle.w = 0
+      return
     }
+
+    if (e.button !== 0) return
+
+    focusAtPointer()
+    scale *= ZOOM_FACTOR
+    history.push({ center: center.clone(), scale })
+    showClickCircle()
   }
 
   const onContextMenu = (e: Event) => e.preventDefault()
@@ -108,33 +140,21 @@ export const mountMandelbrotZoom: EffectMount = (container, options) => {
   ctx.renderer.domElement.addEventListener("pointerdown", onPointerDown)
   ctx.renderer.domElement.addEventListener("contextmenu", onContextMenu)
 
-  const zoomInRate = ctx.preview ? 0.92 : 0.88
-  const zoomOutRate = ctx.preview ? 1.09 : 1.14
-
-  const stopLoop = runAnimationLoop(ctx, (delta) => {
-    const w = ctx.container.clientWidth
-    const h = ctx.container.clientHeight
-    uniforms.u_resolution.value.set(w, h)
-    uniforms.u_center.value.copy(center)
-
-    if (zoomDir === 1) {
-      scale *= Math.pow(zoomInRate, delta * 60)
-      if (scale < 1e-14) {
-        center.set(-0.5, 0)
-        scale = 2.5
-      }
-    } else if (zoomDir === -1) {
-      scale *= Math.pow(zoomOutRate, delta * 60)
-      if (scale > 8) {
-        center.set(-0.5, 0)
-        scale = 2.5
-      }
-    }
-
-    uniforms.u_scale.value = scale
-    uniforms.u_circle.value.copy(circle)
-    uniforms.u_maxIter.value = ctx.preview ? 80 : Math.min(320, Math.floor(120 - Math.log10(scale) * 25))
-  }, { camera: ortho })
+  const stopLoop = runAnimationLoop(
+    ctx,
+    () => {
+      const w = ctx.container.clientWidth
+      const h = ctx.container.clientHeight
+      uniforms.u_resolution.value.set(w, h)
+      uniforms.u_center.value.copy(center)
+      uniforms.u_scale.value = scale
+      uniforms.u_circle.value.copy(circle)
+      uniforms.u_maxIter.value = ctx.preview
+        ? 80
+        : Math.min(320, Math.floor(120 - Math.log10(scale) * 25))
+    },
+    { camera: ortho }
+  )
 
   return () => {
     stopLoop()
