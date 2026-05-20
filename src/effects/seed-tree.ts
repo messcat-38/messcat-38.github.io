@@ -81,6 +81,59 @@ function collectSegments(node: BranchNode, positions: number[], colors: number[]
   node.children.forEach((c) => collectSegments(c, positions, colors, depthColor + 1))
 }
 
+const FIELD_HALF_W = 6
+const FIELD_HALF_H = 4
+
+function pointInPolygon2D(px: number, py: number, poly: { x: number; y: number }[]) {
+  let inside = false
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const xi = poly[i].x
+    const yi = poly[i].y
+    const xj = poly[j].x
+    const yj = poly[j].y
+    if ((yi > py) !== (yj > py) && px < ((xj - xi) * (py - yi)) / (yj - yi) + xi) {
+      inside = !inside
+    }
+  }
+  return inside
+}
+
+function ndcFromClient(clientX: number, clientY: number, dom: HTMLElement) {
+  const rect = dom.getBoundingClientRect()
+  if (rect.width === 0 || rect.height === 0) return null
+  return new THREE.Vector2(
+    ((clientX - rect.left) / rect.width) * 2 - 1,
+    -((clientY - rect.top) / rect.height) * 2 + 1
+  )
+}
+
+function pickGroundPoint(
+  ndc: THREE.Vector2,
+  ground: THREE.Mesh,
+  camera: THREE.Camera,
+  raycaster: THREE.Raycaster
+) {
+  ground.updateMatrixWorld(true)
+  camera.updateMatrixWorld(true)
+
+  const corners = [
+    new THREE.Vector3(-FIELD_HALF_W, -FIELD_HALF_H, 0),
+    new THREE.Vector3(FIELD_HALF_W, -FIELD_HALF_H, 0),
+    new THREE.Vector3(FIELD_HALF_W, FIELD_HALF_H, 0),
+    new THREE.Vector3(-FIELD_HALF_W, FIELD_HALF_H, 0),
+  ]
+  const ndcPoly = corners.map((p) => {
+    const projected = p.clone().applyMatrix4(ground.matrixWorld).project(camera)
+    return { x: projected.x, y: projected.y }
+  })
+  if (!pointInPolygon2D(ndc.x, ndc.y, ndcPoly)) return null
+
+  raycaster.setFromCamera(ndc, camera)
+  const hits = raycaster.intersectObject(ground, false)
+  if (hits.length === 0) return null
+  return hits[0].point
+}
+
 function updateTreeGeometry(tree: Tree) {
   const positions: number[] = []
   const colors: number[] = []
@@ -109,6 +162,14 @@ export const mountSeedTree: EffectMount = (container, options) => {
   ground.position.y = GROUND_Y
   ctx.scene.add(ground)
 
+  if (import.meta.env.DEV) {
+    const edgeLines = new THREE.LineSegments(
+      new THREE.EdgesGeometry(groundGeo),
+      new THREE.LineBasicMaterial({ color: 0x4ade80 })
+    )
+    ground.add(edgeLines)
+  }
+
   ctx.scene.add(new THREE.AmbientLight(0xffffff, 0.55))
   const sun = new THREE.DirectionalLight(0xfff5e6, 0.9)
   sun.position.set(4, 8, 5)
@@ -136,20 +197,30 @@ export const mountSeedTree: EffectMount = (container, options) => {
     trees.push({ root: root.clone(), trunk, lines, geometry: geo })
   }
 
-  const plantSeed = () => {
-    ctx.raycaster.setFromCamera(ctx.mouse, ctx.camera)
-    const hits = ctx.raycaster.intersectObject(ground, false)
-    if (hits.length === 0) return
+  const plantSeed = (clientX: number, clientY: number) => {
+    const ndc = ndcFromClient(clientX, clientY, ctx.renderer.domElement)
+    if (!ndc) return
 
-    const { x, z } = hits[0].point
+    const point = pickGroundPoint(ndc, ground, ctx.camera, ctx.raycaster)
+    if (import.meta.env.DEV) {
+      console.debug("[seed-tree] plant attempt", {
+        ndc: [ndc.x, ndc.y],
+        planted: point !== null,
+      })
+    }
+    if (!point) return
+
     const seedMesh = new THREE.Mesh(seedGeo, seedMat.clone())
-    seedMesh.position.set(x, SPAWN_Y, z)
+    seedMesh.position.set(point.x, SPAWN_Y, point.z)
     ctx.scene.add(seedMesh)
     seeds.push({ mesh: seedMesh, vy: 0, groundY: GROUND_Y + 0.06 })
   }
 
-  const onClick = () => plantSeed()
-  ctx.renderer.domElement.addEventListener("click", onClick)
+  const onPointerDown = (e: PointerEvent) => {
+    if (e.button !== 0) return
+    plantSeed(e.clientX, e.clientY)
+  }
+  ctx.renderer.domElement.addEventListener("pointerdown", onPointerDown)
 
   const growSpeed = ctx.preview ? 1.2 : 0.85
 
@@ -187,7 +258,7 @@ export const mountSeedTree: EffectMount = (container, options) => {
 
   return () => {
     stopLoop()
-    ctx.renderer.domElement.removeEventListener("click", onClick)
+    ctx.renderer.domElement.removeEventListener("pointerdown", onPointerDown)
     groundGeo.dispose()
     groundMat.dispose()
     seedGeo.dispose()
