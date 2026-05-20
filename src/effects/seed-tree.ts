@@ -120,9 +120,6 @@ export const mountSeedTree: EffectMount = (container, options) => {
   const seedGeo = new THREE.SphereGeometry(0.06, 8, 8)
   const seedMat = new THREE.MeshStandardMaterial({ color: 0x8b5a2b, roughness: 0.8 })
 
-  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -GROUND_Y)
-  const hit = new THREE.Vector3()
-
   const germinate = (root: THREE.Vector3) => {
     const trunk = createBranch(
       root,
@@ -141,10 +138,12 @@ export const mountSeedTree: EffectMount = (container, options) => {
 
   const plantSeed = () => {
     ctx.raycaster.setFromCamera(ctx.mouse, ctx.camera)
-    if (!ctx.raycaster.ray.intersectPlane(plane, hit)) return
+    const hits = ctx.raycaster.intersectObject(ground, false)
+    if (hits.length === 0) return
 
+    const { x, z } = hits[0].point
     const seedMesh = new THREE.Mesh(seedGeo, seedMat.clone())
-    seedMesh.position.set(hit.x, SPAWN_Y, hit.z)
+    seedMesh.position.set(x, SPAWN_Y, z)
     ctx.scene.add(seedMesh)
     seeds.push({ mesh: seedMesh, vy: 0, groundY: GROUND_Y + 0.06 })
   }
