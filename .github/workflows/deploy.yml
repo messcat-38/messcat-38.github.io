@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, master]
+    branches: [develop]
   workflow_dispatch:
 
 permissions:
@@ -14,11 +14,12 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: develop
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -38,6 +39,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: main
-          keep_files: true
-          exclude_assets: .github,.gitignore,src,public,scripts,package.json,package-lock.json,tsconfig.app.json,tsconfig.json,tsconfig.node.json,vite.config.ts,eslint.config.js,README.md,node_modules
+          keep_files: false
           commit_message: "chore(deploy): publish site [skip ci]"
