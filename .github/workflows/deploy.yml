@@ -14,6 +14,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,10 +32,12 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Deploy to gh-pages branch
+      - name: Publish dist to main (GitHub Pages legacy)
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          publish_branch: gh-pages
-          force_orphan: true
+          publish_branch: main
+          keep_files: true
+          exclude_assets: .github,.gitignore,src,public,scripts,package.json,package-lock.json,tsconfig.app.json,tsconfig.json,tsconfig.node.json,vite.config.ts,eslint.config.js,README.md,node_modules
+          commit_message: "chore(deploy): publish site [skip ci]"
