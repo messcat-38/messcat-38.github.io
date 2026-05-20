@@ -10,7 +10,17 @@
     <title>mess cat</title>
     <script type="module" crossorigin src="/assets/index-CeKtjqKL.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-BbPDTXDj.css">
-  </head>
+  
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search)
+  var path = params.get("p")
+  if (!path) return
+  var decoded = "/" + path + window.location.hash
+  window.history.replaceState(null, "", decoded)
+})()
+</script>
+</head>
   <body>
     <div id="root"></div>
   </body>
