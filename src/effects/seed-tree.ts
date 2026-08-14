@@ -98,15 +98,6 @@ function pointInPolygon2D(px: number, py: number, poly: { x: number; y: number }
   return inside
 }
 
-function ndcFromClient(clientX: number, clientY: number, dom: HTMLElement) {
-  const rect = dom.getBoundingClientRect()
-  if (rect.width === 0 || rect.height === 0) return null
-  return new THREE.Vector2(
-    ((clientX - rect.left) / rect.width) * 2 - 1,
-    -((clientY - rect.top) / rect.height) * 2 + 1
-  )
-}
-
 function pickGroundPoint(
   ndc: THREE.Vector2,
   ground: THREE.Mesh,
@@ -197,10 +188,8 @@ export const mountSeedTree: EffectMount = (container, options) => {
     trees.push({ root: root.clone(), trunk, lines, geometry: geo })
   }
 
-  const plantSeed = (clientX: number, clientY: number) => {
-    const ndc = ndcFromClient(clientX, clientY, ctx.renderer.domElement)
-    if (!ndc) return
-
+  const plantSeed = () => {
+    const ndc = ctx.mouse
     const point = pickGroundPoint(ndc, ground, ctx.camera, ctx.raycaster)
     if (import.meta.env.DEV) {
       console.debug("[seed-tree] plant attempt", {
@@ -218,7 +207,7 @@ export const mountSeedTree: EffectMount = (container, options) => {
 
   const onPointerDown = (e: PointerEvent) => {
     if (e.button !== 0) return
-    plantSeed(e.clientX, e.clientY)
+    plantSeed()
   }
   ctx.renderer.domElement.addEventListener("pointerdown", onPointerDown)
 

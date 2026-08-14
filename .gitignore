@@ -25,3 +25,6 @@ dist-ssr
 
 # Build
 *.tsbuildinfo
+
+docs/
+TREE.txt

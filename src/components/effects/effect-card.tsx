@@ -11,7 +11,7 @@ export function EffectCard({ effect }: { effect: EffectEntry }) {
       <Card
         className={cn(
           "h-full transition-shadow hover:shadow-md",
-          effect.featured && "border-primary/40 lg:col-span-2"
+          effect.featured && "border-primary/40"
         )}
       >
         <CardHeader className="pb-2">

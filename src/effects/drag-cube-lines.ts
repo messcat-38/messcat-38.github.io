@@ -8,7 +8,6 @@ export const mountDragCubeLines: EffectMount = (container, options) => {
   const nodes: THREE.Mesh[] = []
   const nodeVel: THREE.Vector3[] = []
   const orbitRadius: number[] = []
-  const orbitPhase: number[] = []
 
   for (let i = 0; i < nodeCount; i++) {
     const r = 0.08 + Math.random() * 0.18
@@ -20,12 +19,12 @@ export const mountDragCubeLines: EffectMount = (container, options) => {
     })
     const mesh = new THREE.Mesh(geo, mat)
     const radius = 1.2 + Math.random() * 1.8
+    const phase = Math.random() * Math.PI * 2
     orbitRadius.push(radius)
-    orbitPhase.push(Math.random() * Math.PI * 2)
     mesh.position.set(
-      Math.cos(orbitPhase[i]) * radius,
+      Math.cos(phase) * radius,
       (Math.random() - 0.5) * 1.2,
-      Math.sin(orbitPhase[i]) * radius
+      Math.sin(phase) * radius
     )
     ctx.scene.add(mesh)
     nodes.push(mesh)
@@ -105,8 +104,6 @@ export const mountDragCubeLines: EffectMount = (container, options) => {
       }
 
       sphere.position.add(nodeVel[i])
-
-      orbitPhase[i] += dt * orbitSpeed
     })
 
     const positions: number[] = []

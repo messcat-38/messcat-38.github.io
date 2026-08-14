@@ -35,8 +35,6 @@ export const mountGlowObjects: EffectMount = (container, options) => {
   ctx.scene.add(light)
   ctx.scene.add(new THREE.AmbientLight(0xffffff, 0.35))
 
-  let hovered: THREE.Mesh | null = null
-
   const stopLoop = runAnimationLoop(ctx, () => {
     ctx.raycaster.setFromCamera(ctx.mouse, ctx.camera)
     const hits = ctx.raycaster.intersectObjects(meshes)
@@ -57,8 +55,6 @@ export const mountGlowObjects: EffectMount = (container, options) => {
       m.rotation.x += 0.004
       m.rotation.y += 0.006
     })
-    hovered = next ?? null
-    void hovered
   })
 
   return () => {

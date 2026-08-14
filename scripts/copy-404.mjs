@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, readFileSync, writeFileSync } from "fs"
+import { readFileSync, writeFileSync } from "fs"
 import { join } from "path"
 
 const dist = "dist"
@@ -41,9 +41,5 @@ if (!indexHtml.includes('params.get("p")')) {
 }
 
 writeFileSync(join(dist, "404.html"), spa404)
-
-if (existsSync(".nojekyll")) {
-  copyFileSync(".nojekyll", join(dist, ".nojekyll"))
-}
 
 console.log("Prepared index.html and 404.html for GitHub Pages SPA routing")

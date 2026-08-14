@@ -21,12 +21,8 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return <div className={cn("leading-none font-semibold", className)} {...props} />
 }
 
-function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("text-muted-foreground text-sm", className)} {...props} />
-}
-
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return <div className={cn("px-4", className)} {...props} />
 }
 
-export { Card, CardHeader, CardTitle, CardDescription, CardContent }
+export { Card, CardHeader, CardTitle, CardContent }

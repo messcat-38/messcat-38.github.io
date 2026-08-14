@@ -1,10 +1,9 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import { SiteNav } from "@/components/layout/site-nav"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { HomePage } from "@/pages/HomePage"
 import { PostsPage } from "@/pages/PostsPage"
 import { PostPage } from "@/pages/PostPage"
-import { LegacyRedirect } from "@/pages/LegacyRedirect"
 
 export default function App() {
   return (
@@ -16,7 +15,7 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/posts" element={<PostsPage />} />
             <Route path="/posts/:slug" element={<PostPage />} />
-            <Route path="/tags/*" element={<LegacyRedirect />} />
+            <Route path="/tags/*" element={<Navigate to="/posts" replace />} />
           </Routes>
         </main>
         <SiteFooter />

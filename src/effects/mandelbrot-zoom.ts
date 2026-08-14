@@ -108,15 +108,7 @@ export const mountMandelbrotZoom: EffectMount = (container, options) => {
     circle.set(px, py, 0, (Math.min(w, h) * 0.1) / Math.min(w, h))
   }
 
-  const updateMouseFromEvent = (e: PointerEvent) => {
-    const rect = ctx.renderer.domElement.getBoundingClientRect()
-    ctx.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
-    ctx.mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1
-  }
-
   const onPointerDown = (e: PointerEvent) => {
-    updateMouseFromEvent(e)
-
     if (e.button === 2) {
       e.preventDefault()
       if (history.length > 1) {

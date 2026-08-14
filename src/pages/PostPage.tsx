@@ -1,6 +1,5 @@
 import { Link, Navigate, useParams } from "react-router-dom"
 import { Helmet } from "react-helmet-async"
-import { getPostBySlug } from "@/content/posts"
 import { getEffectBySlug } from "@/effects/registry"
 import { EffectCanvas } from "@/components/effects/effect-canvas"
 import { Badge } from "@/components/ui/badge"
@@ -20,10 +19,9 @@ export function PostPage() {
   if (legacy) {
     return <Navigate to={`/posts/${legacy}`} replace />
   }
-  const post = getPostBySlug(slug)
   const effect = getEffectBySlug(slug)
 
-  if (!post || !effect) {
+  if (!effect) {
     return (
       <section className="mx-auto max-w-3xl px-4 py-16 text-center">
         <p>記事が見つかりません。</p>
@@ -37,17 +35,14 @@ export function PostPage() {
   return (
     <>
       <Helmet>
-        <title>
-          {post.titleJa} · mess cat
-        </title>
-        <meta name="description" content={post.description} />
+        <title>{effect.titleJa} · mess cat</title>
+        <meta name="description" content={effect.description} />
       </Helmet>
       <article className="mx-auto max-w-4xl px-4 py-12">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold">{post.titleJa}</h1>
-          <p className="text-muted-foreground mt-2 text-sm">{post.date}</p>
+          <h1 className="text-3xl font-bold">{effect.titleJa}</h1>
           <div className="mt-3 flex flex-wrap gap-1">
-            {post.tags.map((tag) => (
+            {effect.tags.map((tag) => (
               <Badge key={tag} variant="secondary">
                 {tag}
               </Badge>
