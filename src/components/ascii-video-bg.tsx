@@ -33,19 +33,8 @@ export function AsciiVideoBg({
     let disposed = false
     let stop: (() => void) | undefined
 
-    const video = document.createElement("video")
-    video.src = src
-    video.muted = true
-    video.defaultMuted = true
-    video.loop = true
-    video.playsInline = true
-    video.setAttribute("playsinline", "")
-    video.setAttribute("webkit-playsinline", "")
-    video.autoplay = true
-    video.preload = "auto"
-    video.crossOrigin = "anonymous"
-
-    const ready = asciifyVideo(video, canvas, {
+    // String source lets asciify-engine own muted/loop/playsInline/autoplay.
+    const ready = asciifyVideo(src, canvas, {
       fitTo: host,
       objectFit: "cover",
       objectPosition: "center",
@@ -63,20 +52,15 @@ export function AsciiVideoBg({
       .then((cleanup) => {
         if (disposed) cleanup()
         else stop = cleanup
-        void video.play().catch(() => {
-          /* autoplay may be blocked; asciify still paints once media is ready */
-        })
       })
-      .catch(() => {
+      .catch((error: unknown) => {
+        console.error("[AsciiVideoBg] asciifyVideo failed", error)
         if (!disposed) setFailed(true)
       })
 
     return () => {
       disposed = true
       stop?.()
-      video.pause()
-      video.removeAttribute("src")
-      video.load()
       void ready
     }
   }, [src, reducedMotion, failed])
@@ -98,7 +82,7 @@ export function AsciiVideoBg({
       ) : (
         <canvas
           ref={canvasRef}
-          className="absolute left-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 opacity-55"
+          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-55"
         />
       )}
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/85" />
