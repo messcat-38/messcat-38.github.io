@@ -15,4 +15,4 @@ npm run dev
 npm run build
 ```
 
-Deploy: push to `develop`; GitHub Actions publishes `dist` to `main` (GitHub Pages).
+Deploy: push to `develop` runs **Deploy to GitHub Pages** (Vite build → Pages artifact). Site source must be **GitHub Actions**.
