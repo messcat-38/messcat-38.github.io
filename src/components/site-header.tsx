@@ -1,8 +1,4 @@
-const links = [
-  { href: "#about", label: "About" },
-  { href: "#product", label: "Product" },
-  { href: "#contact", label: "Contact" },
-] as const
+import { navLinks, site } from "@/content"
 
 export function SiteHeader() {
   return (
@@ -12,10 +8,10 @@ export function SiteHeader() {
           href="#about"
           className="font-display text-lg tracking-wide text-white no-underline transition-opacity hover:opacity-80 hover:no-underline md:text-xl"
         >
-          messcat
+          {site.name}
         </a>
         <nav className="flex items-center gap-5 md:gap-8" aria-label="Primary">
-          {links.map((link) => (
+          {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}

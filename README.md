@@ -1,6 +1,16 @@
 # messcat
 
-Personal portfolio — Vite + React + TypeScript + Tailwind, with an ASCII video background via [asciify-engine](https://www.npmjs.com/package/asciify-engine).
+Personal portfolio — one-page Vite + React + TypeScript + Tailwind site with an ASCII video background ([asciify-engine](https://www.npmjs.com/package/asciify-engine)).
+
+## Layout
+
+```
+src/
+  content.ts          # site copy + nav
+  components/         # ascii bg, header
+  sections/           # about / product / contact
+public/               # sea.mp4, poster, product image, favicon
+```
 
 ## Develop
 
@@ -9,10 +19,11 @@ npm install
 npm run dev
 ```
 
-## Build
+## Build / lint
 
 ```bash
 npm run build
+npm run lint
 ```
 
-Deploy: push to `develop` runs **Deploy to GitHub Pages** (Vite build → Pages artifact). Site source must be **GitHub Actions**.
+Deploy: push to `develop` runs **Deploy to GitHub Pages**. Site source must be **GitHub Actions**.
