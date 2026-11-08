@@ -22,7 +22,7 @@
   body {
     margin: 0;
     min-height: 100vh;
-    background: #050505;
+    background: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -36,6 +36,82 @@
 
   a {
     color: inherit;
+  }
+}
+
+@layer components {
+  .section {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 1.25rem;
+  }
+
+  .section-hero {
+    padding-top: 6rem;
+  }
+
+  .section-contact {
+    min-height: 70vh;
+    padding-bottom: 7rem;
+    padding-top: 4rem;
+  }
+
+  .section-inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 72rem;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.5);
+  }
+
+  .section-title {
+    margin-top: 0.75rem;
+    font-family: var(--font-display);
+    font-size: 1.875rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  .section-title-sm {
+    font-size: 1.875rem;
+  }
+
+  .section-copy {
+    margin-top: 1rem;
+    max-width: 32rem;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: rgb(255 255 255 / 0.7);
+  }
+
+  @media (min-width: 640px) {
+    .section-title {
+      font-size: 2.25rem;
+    }
+
+    .section-copy {
+      font-size: 1.125rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .section,
+    .section-hero,
+    .section-contact {
+      padding-inline: 2rem;
+    }
+
+    .section-title:not(.section-title-sm) {
+      font-size: 3rem;
+    }
   }
 }
 
