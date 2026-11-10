@@ -4,6 +4,10 @@ export const site = {
   blurb: "Exploring minds, machines, and everything in between.",
   githubUrl: "https://github.com/messcat-38",
   githubLabel: "github.com/messcat-38",
+  bitcoinLabel: "Bitcoin",
+  bitcoinAddress: "bc1q759dvlcepzy8dkjvh4fetc9jttz0qw7mge8gfk",
+  protonWalletLabel: "Proton Wallet",
+  protonWalletEmail: "uouoxoxou[at]protonmail.com",
 } as const
 
 export const navLinks = [
