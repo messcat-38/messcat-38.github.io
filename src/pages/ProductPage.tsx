@@ -1,11 +1,11 @@
 import { product } from "@/content"
 
-export function ProductSection() {
+export function ProductPage() {
   return (
-    <section id="product" className="section">
-      <div className="section-inner animate-rise-delay">
+    <section className="section section-hero">
+      <div className="section-inner animate-rise">
         <p className="section-label">Product</p>
-        <h2 className="section-title">{product.name}</h2>
+        <h1 className="section-title">{product.name}</h1>
         <p className="section-copy">{product.description}</p>
         <div className="mt-10 max-w-xl">
           <img
