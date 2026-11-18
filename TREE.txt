@@ -10,8 +10,8 @@ src/
   components/         # ascii-video-bg, site-header
 
 public/
-  icon.jpg
   assets/
+    icon.jpg            # favicon
     sea.mp4             # ASCII atmosphere source
     hero-frame.png
     messmap.png
