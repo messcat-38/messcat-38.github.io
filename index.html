@@ -3,21 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="description" content="ポートフォリオ。ブログとか。" />
-    <meta name="author" content="mess cat" />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="messcat — Nerd Engineer. Exploring minds, machines, and everything in between."
+    />
+    <meta name="author" content="messcat" />
     <link rel="icon" type="image/jpeg" href="/icon.jpg" />
-    <title>mess cat</title>
-    <script type="module" crossorigin src="/assets/index-C8Zm7_ga.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CZYdZTlH.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500&family=Syne:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <title>messcat</title>
+    <script type="module" crossorigin src="/assets/index-DDQOJZhv.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BAackbAm.css">
   
 <script>
 (function () {
   var params = new URLSearchParams(window.location.search)
   var path = params.get("p")
   if (!path) return
-  var decoded = "/" + path + window.location.hash
-  window.history.replaceState(null, "", decoded)
+  window.history.replaceState(null, "", "/" + path + window.location.hash)
 })()
 </script>
 </head>
