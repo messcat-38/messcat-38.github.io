@@ -10,8 +10,10 @@ src/
   components/         # ascii-video-bg, site-header
 
 public/
-  sea.mp4             # ASCII atmosphere source
-  hero-frame.png
-  messmap.png
+  icon.jpg
+  assets/
+    sea.mp4             # ASCII atmosphere source
+    hero-frame.png
+    messmap.png
 
 .cursor/              # local only (gitignored)
