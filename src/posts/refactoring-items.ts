@@ -59,7 +59,7 @@ export const refactoringItems: RefactoringItem[] = [
   { id: 10, category: "code-smell", title: "変更の偏り", description: "理由の違う変更を分ける", prompt: "理由の違う変更が同じ部品に集まる所を探して、分けて" },
   { id: 11, category: "code-smell", title: "スパゲッティコード", description: "絡んだ流れをほどく", prompt: "流れが絡んだ所を探して、追える順に直して" },
   { id: 12, category: "code-smell", title: "グローバル変数", description: "どこからでも書き換わるのを防ぐ", prompt: "グローバル変数を探して、引数や明示した依存で渡す形にして" },
-  { id: 13, category: "code-smell", title: "特性の横恋慕", description: "ほかの部品のデータばかり触る処理を移す", prompt: "ほかのクラスのデータを主に使うメソッドを探して、データの持ち主側へ移して" },
+  { id: 13, category: "code-smell", title: "機能の横恋慕", description: "ほかの部品のデータばかり触る処理を移す", prompt: "ほかのクラスのデータを主に使うメソッドを探して、データの持ち主側へ移して" },
   { id: 14, category: "code-smell", title: "データの群れ", description: "いつも一緒の値をまとめる", prompt: "いつも一緒に渡る値の組を探して、1つの型やオブジェクトにまとめて" },
   { id: 15, category: "code-smell", title: "基本データ型への執着", description: "生の数字や文字だけで表すのをやめる", prompt: "意味のある値を生の型だけで表している所を探して、専用の型にまとめて" },
   { id: 16, category: "code-smell", title: "Switch文", description: "同じ分岐の繰り返しを見つける", prompt: "同じ種類の分岐が何か所にもある所を探して、1か所に寄せて" },

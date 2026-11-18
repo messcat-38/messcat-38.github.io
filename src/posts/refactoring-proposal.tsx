@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react"
+import { createPortal } from "react-dom"
 import {
   REFACTORING_CATEGORIES,
   refactoringItems,
@@ -46,14 +47,16 @@ export function RefactoringProposalContent() {
     prompt: string,
     event: MouseEvent<HTMLButtonElement>
   ) {
+    // Capture before await — coords are viewport; toast portals to body.
+    const pad = 12
+    const gap = 14
+    let x = event.clientX
+    let y = event.clientY - gap
+    x = Math.max(pad, Math.min(window.innerWidth - pad, x))
+    y = Math.max(pad + 8, Math.min(window.innerHeight - pad, y))
+
     try {
       await navigator.clipboard.writeText(prompt)
-      const pad = 12
-      const bubbleW = Math.min(320, window.innerWidth - pad * 2)
-      let x = event.clientX
-      let y = event.clientY - 18
-      x = Math.max(pad + bubbleW / 2, Math.min(window.innerWidth - pad - bubbleW / 2, x))
-      y = Math.max(40, Math.min(window.innerHeight - 24, y))
       setToast({ text: prompt, x, y, visible: true })
       if (toastTimer.current) clearTimeout(toastTimer.current)
       toastTimer.current = setTimeout(() => {
@@ -63,6 +66,24 @@ export function RefactoringProposalContent() {
       /* clipboard may be blocked */
     }
   }
+
+  const toastNode = (
+    <div
+      role="status"
+      aria-live="polite"
+      className={[
+        "pointer-events-none fixed z-50 max-w-[min(20rem,calc(100vw-1.5rem))] -translate-x-1/2 -translate-y-full rounded-2xl border border-white/20 bg-[#1a1d2a]/95 px-3.5 py-2 text-left text-[11px] leading-snug text-white/90 shadow-[0_8px_30px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-opacity duration-200 ease-out",
+        toast.visible ? "opacity-100" : "opacity-0",
+      ].join(" ")}
+      style={{ left: toast.x, top: toast.y }}
+    >
+      <p className="line-clamp-3 whitespace-pre-wrap">{toast.text}</p>
+      <span
+        className="absolute left-1/2 top-full -mt-px h-2.5 w-2.5 -translate-x-1/2 rotate-45 border-b border-r border-white/20 bg-[#1a1d2a]/95"
+        aria-hidden
+      />
+    </div>
+  )
 
   return (
     <div className="space-y-5">
@@ -140,23 +161,7 @@ export function RefactoringProposalContent() {
         ))}
       </ul>
 
-      <div
-        role="status"
-        aria-live="polite"
-        className={[
-          "pointer-events-none fixed z-50 max-w-[min(20rem,calc(100vw-1.5rem))] -translate-x-1/2 -translate-y-full rounded-2xl border border-white/20 bg-[#1a1d2a]/95 px-3.5 py-2 text-left text-[11px] leading-snug text-white/90 shadow-[0_8px_30px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-[opacity,transform] duration-300 ease-out",
-          toast.visible
-            ? "opacity-100 scale-100"
-            : "opacity-0 scale-95",
-        ].join(" ")}
-        style={{ left: toast.x, top: toast.y }}
-      >
-        <p className="line-clamp-3 whitespace-pre-wrap">{toast.text}</p>
-        <span
-          className="absolute left-1/2 top-full -mt-px h-2.5 w-2.5 -translate-x-1/2 rotate-45 border-b border-r border-white/20 bg-[#1a1d2a]/95"
-          aria-hidden
-        />
-      </div>
+      {createPortal(toastNode, document.body)}
     </div>
   )
 }
