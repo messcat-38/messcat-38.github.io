@@ -17,7 +17,7 @@ type ToastState = {
 }
 
 function padId(id: number) {
-  return String(id).padStart(3, "0")
+  return String(id).padStart(2, "0")
 }
 
 export function RefactoringProposalContent() {
@@ -136,7 +136,7 @@ export function RefactoringProposalContent() {
             >
               <div className="flex items-start gap-2">
                 <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[#5c6bb8] font-mono text-[11px] font-medium text-white">
-                  {padId(item.id).slice(-2)}
+                  {padId(item.id)}
                 </span>
                 <h3 className="pt-0.5 font-display text-[13px] font-semibold leading-snug tracking-tight text-[#e8eaf6]">
                   {item.title}

@@ -2,7 +2,7 @@ docs/                 # short index only (README.md)
   README.md
 
 src/
-  App.tsx             # routes (dark-only shell)
+  App.tsx             # routes
   content.ts
   pages/              # Home, Product, Blog, BlogPost
   posts/              # blog registry + refactoring-proposal (100 cards)
