@@ -25,3 +25,7 @@ dist-ssr
 
 # Build
 *.tsbuildinfo
+
+# Local Cursor project files
+.cursor/
+

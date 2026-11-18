@@ -1,0 +1,17 @@
+docs/                 # short index only (README.md)
+  README.md
+
+src/
+  App.tsx             # routes (dark-only shell)
+  content.ts
+  pages/              # Home, Product, Blog, BlogPost
+  posts/              # blog registry + refactoring-proposal (100 cards)
+  sections/           # About, Contact
+  components/         # ascii-video-bg, site-header
+
+public/
+  sea.mp4             # ASCII atmosphere source
+  hero-frame.png
+  messmap.png
+
+.cursor/              # local only (gitignored)
