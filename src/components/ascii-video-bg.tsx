@@ -7,8 +7,8 @@ type AsciiVideoBgProps = {
 }
 
 export function AsciiVideoBg({
-  src = "/sea.mp4",
-  poster = "/hero-frame.png",
+  src = "/assets/sea.mp4",
+  poster = "/assets/hero-frame.png",
 }: AsciiVideoBgProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const hostRef = useRef<HTMLDivElement>(null)

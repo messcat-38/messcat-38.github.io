@@ -21,7 +21,7 @@ export const product = {
   name: "messmap",
   description: "日記から生成する思考拡張マインドマップ",
   image: {
-    src: "/messmap.png",
+    src: "/assets/messmap.png",
     alt: "messmap — circular cluster mind map",
     width: 886,
     height: 793,
